@@ -1,0 +1,148 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link href='https://fonts.googleapis.com/css?family=Varela+Round' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="css/main.css">
+  <!-- Optional IE8 Support  ( ONLY USE IF IE8 SUPPORT NEEDED ) -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+  <title>Javascript Calculator</title>
+</head>
+<body>
+<div class="main-container">
+  <div class="row">
+    <div class="left-spacer col-xs-0 col-sm-2 col-md-3 col-lg-3"></div>
+    <div class="top-text col-xs-12 col-sm-8 col-md-6 col-lg-6">
+      <h1>A FreeCodeCamp Zipline: Build a JavaScript Calculator</h1>
+
+      <h3>This calculator operates in RPN, that is, Reverse Polish notation.</h3>
+
+      <h4>Why use RPN? Read <a href="http://www.xnumber.com/xnumber/rpn_or_adl.htm" target="_blank">James Redin's
+        RPN or DAL?
+      </a> and see this <a href="https://www.youtube.com/watch?v=7ha78yWRDlE" target="_blank">YouTube video.</a></h4>
+
+      <p>I purchased my first RPN calculator in 1981, an <a
+          href="https://www.google.ca/search?q=hewlett+packard+34c+calculator+picture&biw=1680&bih=900&tbm=isch&tbo=u&source=univ&sa=X&ved=0ahUKEwiZqKTkoaDKAhVFHT4KHTGMAw0QsAQIJQ#imgrc=buDlUFuBqet42M%3A"
+          target=_blank">HP-34c</a>, and have since purchased several more.</p>
+
+      <p>Below is a very simple RPN "Postfix" calculator. With RPN you don't use brackets to show "order of operation"
+        when
+        evaluation order is ambiguous, for example solving (2 + 4) * 5. Instead you push intermediate results onto a
+        stack until needed. In RPN there is no "equals" key. And typically you require less keystrokes when
+        solving complex equations, and those calculations are less prone to errors.</p>
+
+      <p>At the bottom of this page I've included a few examples on using a RPN calculator.</p>
+    </div> <!-- end top-text -->
+    <div class="right-spacer col-xs-0 col-sm-2 col-md-3 col-lg-3"></div>
+  </div> <!-- end row -->
+  <div id="calculator-container" class="container">
+    <div class="row">
+      <div id="spacer-left" class="spacer col-sm-4"></div>
+      <div id="calculator-body" class="col-sm-4">
+        <div id="calculator-screen">
+          <div id="Z-stack">
+            <span class="stack-label">Z: </span>
+            <span id="Z-display-target"></span>
+          </div>
+          <div id="Y-stack">
+            <span class="stack-label">Y: </span>
+            <span id="Y-display-target"></span>
+          </div>
+          <div id="X-stack">
+            <span class="stack-label">X: </span>
+            <span id="X-display-target"></span>
+          </div>
+          <div id="screen-text">
+            <span id="screen-text-target">RPN Javascript Calculator</span>
+          </div>
+        </div><!-- end calculator-screen -->
+        <div class="calculator-button-wrapper">
+          <div id="row-1">
+            <button onclick="main.captureOneOverX_Key()" class="key smaller-font"><span class="super">1</span>/x
+            </button>
+            <button onclick="main.captureY_ToX_Key()" class="key smaller-font">y<span class="super">x</span></button>
+            <button onclick="main.captureX_SquaredKey()" class="key smaller-font">x<span class="super">2</span></button>
+            <button onclick="main.captureSquareRootOfX_Key()" class="key key2 smaller-font">SqRt</button>
+          </div>
+          <div id="row-2">
+            <button onclick="main.captureEnterKey()" class="key smaller-font2">ENTER</button>
+            <button onclick="main.captureClearKey()" class="key smaller-font2">CLR</button>
+            <button onclick="main.captureClearX_Key()" class="key smaller-font2">CLx</button>
+            <button onclick="main.captureX_SwapY_Key()" class="key key3 smaller-font2">X<img class="swap_x_y" src="./images/exchange.png"/>Y
+            </button>
+          </div>
+          <div id="row-3">
+            <button onclick="main.captureSubtractionKey()" class="key">-</button>
+            <button onclick="main.captureNumKey(7)" class="key">7</button>
+            <button onclick="main.captureNumKey(8)" class="key">8</button>
+            <button onclick="main.captureNumKey(9)" class="key">9</button>
+          </div>
+          <div id="row-4">
+            <button onclick="main.captureAdditionKey()" class="key">+</button>
+            <button onclick="main.captureNumKey(4)" class="key">4</button>
+            <button onclick="main.captureNumKey(5)" class="key">5</button>
+            <button onclick="main.captureNumKey(6)" class="key">6</button>
+          </div>
+          <div id="row-5">
+            <button onclick="main.captureMultiplicationKey()" class="key">*</button>
+            <button onclick="main.captureNumKey(1)" class="key">1</button>
+            <button onclick="main.captureNumKey(2)" class="key">2</button>
+            <button onclick="main.captureNumKey(3)" class="key">3</button>
+          </div>
+          <div id="row-6">
+            <button onclick="main.captureDivisionKey()" class="key">/</button>
+            <button onclick="main.captureNumKey(0)" class="key">0</button>
+            <button onclick="main.captureNumKey('.')" class="key">.</button>
+            <button onclick="main.captureChangeSignKey()" class="key">+ / -</button>
+          </div>
+        </div><!-- calculator-button-wrapper -->
+        <div id="text-under-keypad">
+          <p>FreeCodeCamp</p>
+        </div>
+      </div><!-- end calculator-body -->
+      <div id="spacer-right" class="spacer col-sm-4"></div>
+    </div><!-- end class row -->
+  </div><!-- end calculator-container -->
+  <div class="bottom-text row">
+    <div class="left-spacer col-xs-0 col-sm-2 col-md-3 col-lg-3"></div>
+    <div class="col-xs-12 col-sm-8 col-md-6 col-lg-6">
+      <p class="example-highlight">Example 1: solve 3 + 5</p>
+
+      <p>Classical calculator keystrokes are <span class="text-keys">3</span> <span class="text-keys">+</span>
+        <span class="text-keys">5</span> <span class="text-keys">=</span> giving an answer of 8</p>
+
+      <p>RPN calculator keystrokes are <span class="text-keys">3</span> <span class="text-keys">Enter</span>
+        <span class="text-keys">5</span> <span class="text-keys">+</span> giving an answer of 8</p>
+
+      <p>Notes - both methods required 4 keystrokes, so same amount of work.</p>
+
+      <p class="example-highlight">Example 2: solve (3 + 5) * (6 - 2) </p>
+
+      <p>Classical calculator keystrokes are <span class="text-keys">(</span> <span class="text-keys">3</span>
+        <span class="text-keys">+</span> <span class="text-keys">5</span> <span class="text-keys">)</span>
+        <span class="text-keys">*</span> <span class="text-keys">(</span> <span class="text-keys">6</span>
+        <span class="text-keys">-</span> <span class="text-keys">2</span> <span class="text-keys">)</span>
+        <span class="text-keys">=</span> giving an answer of 32</p>
+
+      <p>RPN calculator keystrokes are <span class="text-keys">3</span> <span class="text-keys">Enter</span>
+        <span class="text-keys">5</span> <span class="text-keys">+</span> <span class="text-keys">6</span>
+        <span class="text-keys">Enter</span> <span class="text-keys">2</span> <span class="text-keys">-</span>
+        <span class="text-keys">*</span> giving an answer of 32</p>
+
+      <p>Notes - first method required 12 keystrokes, second method required 9. Using RPN saved 3 keystrokes.</p>
+    </div>
+    <div class="right-spacer col-xs-0 col-sm-2 col-md-3 col-lg-3"></div>
+  </div> <!-- end bottom-text -->
+</div> <!-- end main-container -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
